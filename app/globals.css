@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Rajdhani:wght@500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 15 23 42;
+  --surface: 30 41 59;
+}
+
+body {
+  background-color: #0F172A;
+  color: #F8FAFC;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6, .font-heading {
+  font-family: 'Rajdhani', sans-serif;
+  letter-spacing: 0.04em;
+}
+
+/* Glassmorphism ESL Esports primitives */
+.glass-panel {
+  background: rgba(30, 41, 59, 0.75);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.glass-card {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.85) 0%, rgba(15, 23, 42, 0.95) 100%);
+  backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 30, 66, 0.2);
+  border-radius: 1.5rem; /* 24px rounded corners */
+  transition: all 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.glass-card:hover {
+  border-color: rgba(255, 107, 0, 0.6);
+  box-shadow: 0 14px 40px -10px rgba(255, 30, 66, 0.35);
+  transform: translateY(-5px);
+}
+
+/* Custom Esports Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0F172A;
+}
+::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #FF1E42;
+}
+
+/* Cyber text effects */
+.text-glow-red {
+  text-shadow: 0 0 16px rgba(255, 30, 66, 0.7);
+}
+
+.text-glow-orange {
+  text-shadow: 0 0 16px rgba(255, 107, 0, 0.7);
+}
+
+.text-glow-cyan {
+  text-shadow: 0 0 16px rgba(0, 240, 255, 0.7);
+}
+
+.clip-cyber-corner {
+  clip-path: polygon(0 0, calc(100% - 14px) 0, 100% 14px, 100% 100%, 14px 100%, 0 calc(100% - 14px));
+}
+
+.prose table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
+.prose th, .prose td { border: 1px solid #475569; padding: .65rem; text-align: left; }
+.prose th { background: #1e293b; }
+.prose img, .prose iframe { max-width: 100%; border-radius: .75rem; }
+.prose iframe { aspect-ratio: 16 / 9; width: 100%; height: auto; min-height: 240px; }
