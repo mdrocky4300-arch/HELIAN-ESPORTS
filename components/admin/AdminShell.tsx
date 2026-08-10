@@ -15,10 +15,18 @@ export default function AdminShell({ children }: AdminShellProps) {
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    const session = document.cookie.includes('admin_session=');
-    if (!session) {
-      router.replace('/admin/login');
-    }
+    const verifySession = async () => {
+      try {
+        const res = await fetch('/api/admin/session', { credentials: 'include' });
+        if (!res.ok) {
+          router.replace('/admin/login');
+        }
+      } catch {
+        router.replace('/admin/login');
+      }
+    };
+
+    void verifySession();
   }, [router]);
 
   const handleLogout = async () => {

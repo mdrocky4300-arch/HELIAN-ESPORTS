@@ -13,10 +13,18 @@ export default function AdminLoginPage() {
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const stored = document.cookie.split('; ').find((item) => item.startsWith('admin_session='));
-    if (stored) {
-      router.replace('/admin');
-    }
+    const verifySession = async () => {
+      try {
+        const res = await fetch('/api/admin/session', { credentials: 'include' });
+        if (res.ok) {
+          router.replace('/admin');
+        }
+      } catch {
+        // Ignore and allow the user to log in manually.
+      }
+    };
+
+    void verifySession();
   }, [router]);
 
   const handleSubmit = async (e: React.FormEvent) => {
