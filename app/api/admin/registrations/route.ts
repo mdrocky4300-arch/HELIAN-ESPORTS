@@ -87,7 +87,7 @@ export async function PATCH(request: NextRequest) {
 
     const newStatus = action === 'APPROVE' ? 'VERIFIED' : 'REJECTED';
 
-    await prisma.$transaction(async (tx) => {
+    await prisma.$transaction(async (tx: any) => {
       // 1. Update participant status
       await tx.participant.update({
         where: { id: registrationId },
