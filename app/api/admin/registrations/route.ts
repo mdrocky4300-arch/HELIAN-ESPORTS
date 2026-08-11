@@ -24,7 +24,7 @@ export async function GET() {
       },
     });
 
-    const result = registrations.map((reg) => ({
+    const result = registrations.map((reg: any) => ({
       id: reg.id,
       registrationId: reg.registrationId,
       teamId: reg.teamId,
