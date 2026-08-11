@@ -52,7 +52,6 @@ export default async function LivePage() {
     return match && match[1].length === 11 ? match[1] : null;
   };
 
-  const videoIds = youtubeUrls.map(u => getYoutubeId(u)).filter(Boolean) as string[];
 
   return (
     <div className="min-h-screen bg-background flex flex-col font-sans selection:bg-brand-red/30">
