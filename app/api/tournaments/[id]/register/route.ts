@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
+import type { Prisma } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
 import { getTournamentByIdFromDb } from '@/lib/tournament-store';
 
@@ -155,7 +156,7 @@ export async function POST(
     const trxId = `WAL_${Date.now()}_${Math.random().toString(36).substring(2, 6).toUpperCase()}`;
 
     // Execute all DB changes in one transaction
-    const result = await prisma.$transaction(async (tx) => {
+    const result = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
       // 1. Deduct wallet balance immediately
       const updatedUser = await tx.user.update({
         where: { id: userId },

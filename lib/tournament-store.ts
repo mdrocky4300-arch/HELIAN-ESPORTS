@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/prisma';
+import type { Prisma } from '@prisma/client';
 import type { Tournament, TournamentCommunityConfig, TournamentStatus, CommunityAccessType, CommunityUnlockMode } from '@/lib/types';
 import { getDynamicTournamentStatus } from '@/lib/tournament-utils';
 
@@ -88,7 +89,7 @@ export async function getTournamentByIdFromDb(id: string) {
 }
 
 export async function createTournamentInDb(input: Record<string, any>) {
-  const record = await prisma.$transaction(async (tx) => {
+  const record = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     return tx.tournament.create({
       data: {
         title: String(input.title || ''),
@@ -141,7 +142,7 @@ export async function createTournamentInDb(input: Record<string, any>) {
 }
 
 export async function updateTournamentInDb(id: string, input: Record<string, any>) {
-  const record = await prisma.$transaction(async (tx) => {
+  const record = await prisma.$transaction(async (tx: Prisma.TransactionClient) => {
     return tx.tournament.update({
       where: { id },
       data: {

@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "./globals.css";
 import MobileBottomNav from "@/components/ui/MobileBottomNav";
 
@@ -6,6 +6,9 @@ export const metadata: Metadata = {
   title: "Helian Tournaments | Free Fire Esports Platform",
   description: "Join daily Free Fire BR Squad, Duo & CS 4v4 tournaments. Win instant cash payouts via bKash & Nagad.",
   manifest: "/manifest.json",
+};
+
+export const viewport: Viewport = {
   themeColor: "#FF1E42",
 };
 
