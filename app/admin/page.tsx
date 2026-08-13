@@ -63,13 +63,20 @@ export default function AdminDashboardPage() {
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-3 flex-wrap justify-end">
             <Link
               href="/admin/tournaments"
               className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-brand-red to-brand-orange text-white font-heading font-bold text-xs shadow-neon-red flex items-center space-x-1.5"
             >
               <PlusCircle className="w-4 h-4" />
               <span>NEW TOURNAMENT</span>
+            </Link>
+            <Link
+              href="/vendor/login"
+              className="px-4 py-2.5 rounded-xl bg-brand-purple text-white font-heading font-bold text-xs shadow-neon-cyan relative flex items-center space-x-1.5"
+            >
+              <ShieldCheck className="w-4 h-4" />
+              <span>VENDOR LOGIN</span>
             </Link>
             <Link
               href="/admin/payments"

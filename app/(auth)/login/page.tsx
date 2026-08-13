@@ -11,19 +11,29 @@ import { db } from '@/lib/db';
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('admin@helian.gg');
-  const [password, setPassword] = useState('password123');
+  const [password, setPassword] = useState('admin123');
 
   const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    const users = db.getUsers();
-    const found = users.find(u => u.email === email);
+    const found = db.loginWithEmailAndPassword(email, password);
     if (found) {
       db.setCurrentUser(found);
-      router.push(found.role === 'ADMIN' ? '/admin' : '/profile');
-    } else {
-      alert('User not found. Using admin account.');
-      router.push('/admin');
+
+      if (found.role === 'ADMIN') {
+        router.push('/admin');
+        return;
+      }
+
+      if (found.role === 'VENDOR') {
+        router.push('/vendor');
+        return;
+      }
+
+      router.push('/profile');
+      return;
     }
+
+    alert('Invalid email or password.');
   };
 
   return (
@@ -48,8 +58,9 @@ export default function LoginPage() {
           {/* Quick Demo Credentials Banner */}
           <div className="p-3 rounded-xl bg-surface-light border border-surface-border text-xs space-y-1 text-gray-300">
             <div className="font-bold text-brand-gold">Demo Quick Login:</div>
-            <div>Admin: <code className="text-brand-cyan">admin@helian.gg</code></div>
-            <div>Player: <code className="text-brand-orange">tanvir@gmail.com</code></div>
+            <div>Admin: <code className="text-brand-cyan">admin@helian.gg / admin123</code></div>
+            <div>Vendor: <code className="text-brand-cyan">vendor@helian.gg / vendor123</code></div>
+            <div>Player: <code className="text-brand-orange">tanvir@gmail.com / player123</code></div>
           </div>
 
           <form onSubmit={handleLogin} className="space-y-4">

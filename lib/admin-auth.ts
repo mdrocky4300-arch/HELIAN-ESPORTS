@@ -39,9 +39,9 @@ export const adminAuditLog: Array<{ id: string; actor: string; action: string; d
 const initialAdmin = {
   id: 'admin-super-001',
   name: 'Super Admin',
-  email: process.env.ADMIN_EMAIL || 'superadmin@helian.com',
+  email: process.env.ADMIN_EMAIL || 'admin@helian.gg',
   role: 'SUPER_ADMIN' as AdminRole,
-  passwordHash: process.env.ADMIN_PASSWORD_HASH || bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'Helian@Admin#2026!', 12),
+  passwordHash: process.env.ADMIN_PASSWORD_HASH || bcrypt.hashSync(process.env.ADMIN_PASSWORD || 'admin123', 12),
   createdAt: new Date().toISOString(),
 };
 

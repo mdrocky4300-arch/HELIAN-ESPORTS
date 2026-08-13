@@ -4,10 +4,13 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { ShieldCheck, Eye, EyeOff } from 'lucide-react';
 
+const DEFAULT_ADMIN_EMAIL = 'admin@helian.gg';
+const DEFAULT_ADMIN_PASSWORD = 'admin123';
+
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [email, setEmail] = useState('superadmin@helian.com');
-  const [password, setPassword] = useState('Helian@Admin#2026!');
+  const [email, setEmail] = useState(DEFAULT_ADMIN_EMAIL);
+  const [password, setPassword] = useState(DEFAULT_ADMIN_PASSWORD);
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -60,6 +63,30 @@ export default function AdminLoginPage() {
             <p className="text-xs uppercase tracking-[0.3em] text-red-400">Secure Admin Access</p>
             <h1 className="text-2xl font-semibold text-white">HELIAN ADMIN</h1>
           </div>
+        </div>
+
+        <div className="mb-5 rounded-2xl border border-red-500/30 bg-red-500/10 p-4 text-sm text-slate-200">
+          <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.25em] text-red-300">Demo admin credentials</p>
+          <div className="space-y-2">
+            <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-950/60 px-3 py-2">
+              <span className="text-slate-400">Username</span>
+              <span className="font-semibold text-white">{DEFAULT_ADMIN_EMAIL}</span>
+            </div>
+            <div className="flex items-center justify-between gap-3 rounded-xl bg-slate-950/60 px-3 py-2">
+              <span className="text-slate-400">Password</span>
+              <span className="font-semibold text-white">{DEFAULT_ADMIN_PASSWORD}</span>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => {
+              setEmail(DEFAULT_ADMIN_EMAIL);
+              setPassword(DEFAULT_ADMIN_PASSWORD);
+            }}
+            className="mt-3 text-xs font-semibold text-red-300 underline underline-offset-4"
+          >
+            Use these credentials
+          </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">

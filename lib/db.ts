@@ -45,8 +45,51 @@ class LocalDatabase {
     this.save();
   }
 
+  loginWithEmailAndPassword(email: string, password: string): User | null {
+    const trimmedEmail = email.trim().toLowerCase();
+    const trimmedPassword = password.trim();
+
+    return this.users.find((user) => {
+      const storedPassword = String(user.password ?? '').trim();
+      return user.email.trim().toLowerCase() === trimmedEmail && storedPassword === trimmedPassword;
+    }) ?? null;
+  }
+
   getUsers(): User[] {
     return this.users;
+  }
+
+  createVendor(details: { name: string; email: string; password: string; inGameName?: string }): User | null {
+    const name = details.name?.trim();
+    const email = details.email?.trim();
+    const password = details.password?.trim();
+
+    if (!name || !email || !password) return null;
+
+    const emailExists = this.users.some((user) => user.email.toLowerCase() === email.toLowerCase());
+    if (emailExists) return null;
+
+    const newVendor: User = {
+      id: `vendor_${Date.now()}`,
+      name,
+      email,
+      password,
+      avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&auto=format&fit=crop&q=80',
+      role: 'VENDOR',
+      freeFireUid: `VENDOR_${Math.floor(1000000000 + Math.random() * 9000000000)}`,
+      inGameName: (details.inGameName || name).toUpperCase().replace(/\s+/g, '_'),
+      walletBalance: 0,
+      totalKills: 0,
+      totalWins: 0,
+      earnings: 0,
+      isBanned: false,
+      referralCode: `VENDOR${Math.floor(100 + Math.random() * 900)}`,
+      createdAt: new Date().toISOString(),
+    };
+
+    this.users.unshift(newVendor);
+    this.save();
+    return newVendor;
   }
 
   updateUser(id: string, updates: Partial<User>): User | null {

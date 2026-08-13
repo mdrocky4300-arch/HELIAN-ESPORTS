@@ -1,4 +1,4 @@
-export type Role = 'USER' | 'MODERATOR' | 'ADMIN';
+export type Role = 'USER' | 'MODERATOR' | 'ADMIN' | 'VENDOR';
 export type Mode = 'SOLO' | 'DUO' | 'SQUAD';
 export type Format = 'BR_RANKED' | 'CS_RANKED';
 export type TournamentStatus = 'DRAFT' | 'UPCOMING' | 'LIVE' | 'FINISHED' | 'CANCELLED';
@@ -22,6 +22,7 @@ export interface User {
   id: string;
   name: string;
   email: string;
+  password?: string;
   avatar: string;
   role: Role;
   freeFireUid: string;

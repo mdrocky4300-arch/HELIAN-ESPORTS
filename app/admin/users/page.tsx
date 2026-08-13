@@ -11,20 +11,81 @@ import { User, Role } from '@/lib/types';
 export default function AdminUsersPage() {
   const [users, setUsers] = useState<User[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [vendorForm, setVendorForm] = useState({ name: '', email: '', password: '', inGameName: '' });
+  const [editingVendorId, setEditingVendorId] = useState<string | null>(null);
+  const [vendorMessage, setVendorMessage] = useState('');
 
   useEffect(() => {
     setUsers([...db.getUsers()]);
   }, []);
 
+  const refreshUsers = () => setUsers([...db.getUsers()]);
+
   const handleBanToggle = (id: string) => {
     db.toggleBanUser(id);
-    setUsers([...db.getUsers()]);
+    refreshUsers();
   };
 
   const handleRoleChange = (id: string, role: Role) => {
     db.updateUser(id, { role });
-    setUsers([...db.getUsers()]);
+    refreshUsers();
   };
+
+  const handleVendorSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+
+    const name = vendorForm.name.trim();
+    const email = vendorForm.email.trim();
+    const password = vendorForm.password.trim();
+
+    if (!name || !email || !password) {
+      setVendorMessage('Vendor name, email and password are required.');
+      return;
+    }
+
+    if (editingVendorId) {
+      const updated = db.updateUser(editingVendorId, {
+        name,
+        email,
+        password,
+        inGameName: vendorForm.inGameName.trim() || name,
+      });
+      if (!updated) {
+        setVendorMessage('Unable to update this vendor.');
+        return;
+      }
+      setVendorMessage('Vendor account updated successfully.');
+    } else {
+      const created = db.createVendor({
+        name,
+        email,
+        password,
+        inGameName: vendorForm.inGameName.trim() || name,
+      });
+      if (!created) {
+        setVendorMessage('This vendor email already exists.');
+        return;
+      }
+      setVendorMessage('New vendor account created successfully.');
+    }
+
+    setVendorForm({ name: '', email: '', password: '', inGameName: '' });
+    setEditingVendorId(null);
+    refreshUsers();
+  };
+
+  const startVendorEdit = (vendor: User) => {
+    setEditingVendorId(vendor.id);
+    setVendorForm({
+      name: vendor.name,
+      email: vendor.email,
+      password: vendor.password || '',
+      inGameName: vendor.inGameName,
+    });
+    setVendorMessage('Editing vendor account.');
+  };
+
+  const vendorUsers = users.filter((u) => u.role === 'VENDOR');
 
   const filteredUsers = users.filter(u =>
     u.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -73,6 +134,118 @@ export default function AdminUsersPage() {
           </div>
         </div>
 
+        <div className="glass-card rounded-2xl p-6 border border-surface-border">
+          <div className="flex items-center justify-between gap-4 mb-5">
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.25em] text-violet-300">Vendor Management</p>
+              <h2 className="mt-2 text-2xl font-black text-white">Create or update vendor access</h2>
+            </div>
+          </div>
+
+          <form onSubmit={handleVendorSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-4">
+            <div>
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-300">Vendor Name</label>
+              <input
+                value={vendorForm.name}
+                onChange={(e) => setVendorForm({ ...vendorForm, name: e.target.value })}
+                className="w-full rounded-xl border border-surface-border bg-surface-light px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-orange"
+                placeholder="Vendor Alpha"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-300">In-game Name</label>
+              <input
+                value={vendorForm.inGameName}
+                onChange={(e) => setVendorForm({ ...vendorForm, inGameName: e.target.value })}
+                className="w-full rounded-xl border border-surface-border bg-surface-light px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-orange"
+                placeholder="VENDOR_ALPHA"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-300">Vendor Email</label>
+              <input
+                type="email"
+                value={vendorForm.email}
+                onChange={(e) => setVendorForm({ ...vendorForm, email: e.target.value })}
+                className="w-full rounded-xl border border-surface-border bg-surface-light px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-orange"
+                placeholder="vendor@helian.gg"
+              />
+            </div>
+
+            <div>
+              <label className="mb-2 block text-xs font-bold uppercase tracking-wider text-gray-300">Password</label>
+              <input
+                type="text"
+                value={vendorForm.password}
+                onChange={(e) => setVendorForm({ ...vendorForm, password: e.target.value })}
+                className="w-full rounded-xl border border-surface-border bg-surface-light px-3 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-brand-orange"
+                placeholder="vendor123"
+              />
+            </div>
+
+            <div className="md:col-span-4 flex items-center justify-between gap-4 pt-2">
+              <button
+                type="submit"
+                className="rounded-xl bg-gradient-to-r from-violet-500 to-fuchsia-500 px-4 py-2.5 text-sm font-bold text-white"
+              >
+                {editingVendorId ? 'Update Vendor' : 'Create Vendor'}
+              </button>
+
+              {editingVendorId && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditingVendorId(null);
+                    setVendorForm({ name: '', email: '', password: '', inGameName: '' });
+                    setVendorMessage('');
+                  }}
+                  className="rounded-xl border border-surface-border bg-surface-light px-4 py-2.5 text-sm font-bold text-gray-300"
+                >
+                  Cancel Edit
+                </button>
+              )}
+            </div>
+          </form>
+
+          {vendorMessage && (
+            <div className="mt-4 rounded-xl border border-violet-500/30 bg-violet-500/10 px-3 py-2 text-sm text-violet-200">
+              {vendorMessage}
+            </div>
+          )}
+
+          <div className="mt-6 grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+            {vendorUsers.map((vendor) => (
+              <div key={vendor.id} className="rounded-2xl border border-surface-border bg-surface-light p-4">
+                <div className="flex items-center justify-between gap-3">
+                  <div>
+                    <p className="text-lg font-black text-white">{vendor.name}</p>
+                    <p className="text-xs text-gray-400">{vendor.email}</p>
+                  </div>
+                  <button
+                    onClick={() => startVendorEdit(vendor)}
+                    className="rounded-lg bg-violet-500/10 px-2.5 py-1.5 text-xs font-bold text-violet-200"
+                  >
+                    Edit
+                  </button>
+                </div>
+
+                <div className="mt-3 rounded-xl bg-slate-950/60 p-3 text-xs text-gray-300">
+                  <div className="flex justify-between gap-3 py-1">
+                    <span className="text-gray-400">Password</span>
+                    <span className="font-semibold text-white">{vendor.password || 'Not set'}</span>
+                  </div>
+                  <div className="flex justify-between gap-3 py-1">
+                    <span className="text-gray-400">In-game</span>
+                    <span className="font-semibold text-white">{vendor.inGameName || 'N/A'}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
         <div className="glass-card rounded-2xl overflow-hidden border border-surface-border">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
@@ -113,6 +286,7 @@ export default function AdminUsersPage() {
                         <option value="USER">USER</option>
                         <option value="MODERATOR">MODERATOR</option>
                         <option value="ADMIN">ADMIN</option>
+                        <option value="VENDOR">VENDOR</option>
                       </select>
                     </td>
 
